@@ -1,0 +1,88 @@
+#set($layout = "mainLayout.htm")
+<div class="container main" style="height: 500px">
+
+  <div id="successMsg" class="alert alert-success hide"></div>
+  <div id="errorMsg" class="alert alert-error hide"></div>
+
+  <label>用户名</label> <input type="text" id="username" autocomplete="off" placeholder=""> <label>密码</label> <input
+    type="text" id="passwd" autocomplete="off" placeholder="">
+  <hr>
+  <img id="vcodeImage" src=""> <label>验证码</label> <input type="text" id="vcode" placeholder="">
+  <hr>
+  <button onclick="doLogin()" type="button" class="btn">提交</button>
+</div>
+<script>
+	function doLogin() {
+		$("#successMsg").hide();
+		$("#errorMsg").hide();
+		var url = window.contextpath + '/club/doLogin';
+		var param = new Object();
+		param.username = $("#username").val();
+		param.passwd = $("#passwd").val();
+		param.vcode = $("#vcode").val();
+		$.ajax({
+			type : 'POST',
+			url : url,
+			data : param,
+			dataType : "json",
+			async : true,
+			success : doLoginDone,
+			error : repub.httpError
+		});
+	}
+	function doLoginDone(data) {
+		if (data.success == false) {
+			$("#errorMsg").text(data.errorMsg);
+			$("#errorMsg").show();
+		} else {
+			//成功了，显示成功，
+			$("#successMsg").text("登录成功，请继续！");
+			$("#successMsg").show();
+		}
+		//并且显示下一个验证码
+		displayVcode();
+		loadName();
+	}
+
+	function loadName() {
+		var url = window.contextpath + '/club/loadName?t=' + new Date();
+		var param = new Object();
+		$.ajax({
+			type : 'GET',
+			url : url,
+			data : param,
+			dataType : "json",
+			async : false,
+			success : loadNameDone,
+			error : repub.httpError
+		});
+	}
+	function loadNameDone(data) {
+		if (data.success == false) {
+			$("#errorMsg").text(data.errorMsg);
+			$("#errorMsg").show();
+		} else {
+			$("#username").val(data.username);
+			$("#passwd").val(data.passwd);
+		}
+	}
+
+	function displayVcode() {
+		//显示验证码
+		$("#vcodeImage").attr("src",
+				"${rc.contextPath}/club/vcode" + "?t=" + new Date());
+		//输入位置定位到验证码框
+		$("#vcode").focus();
+		$("#vcode").val('');
+	}
+
+	function bind() {
+		$('#vcode').bind('keypress', function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 13) { //Enter keycode
+				doLogin();
+			}
+		});
+	}
+</script>
+#parse("club/initJs.htm")

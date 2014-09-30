@@ -1,0 +1,32 @@
+#set($layout = "mainLayout.htm")
+<div class="container">
+  <div class="row">
+    <div class="span2">
+      <ul class="well nav nav-pills nav-stacked">
+        <!--   <ul class="well nav nav-list affix">   -->
+        <li class="nav-header"><i class="icon-tasks"></i> 商品重发功能</li>
+        <li class="$!{readmeActive}"><a href="${rc.contextPath}/readme"><i
+            class="icon-file #if(${readmeActive})icon-white #end"></i> 使用说明 </a></li>
+        <li class="$!{mainActive}"><a href="${rc.contextPath}/main"><i
+            class="icon-wrench #if(${mainActive})icon-white #end"></i> 商品重发设置 </a></li>
+        <li class="$!{planActive}"><a href="${rc.contextPath}/plan"><i
+            class="icon-list-alt #if(${planActive})icon-white #end"></i> 查看重发计划 </a></li>
+        <li class="$!{hispostActive}"><a href="${rc.contextPath}/his"><i
+            class="icon-check #if(${hispostActive})icon-white #end"></i> 查看重发记录 </a></li>
+        <li class="divider_line"></li>
+        <li class="nav-header"><i class="icon-user"></i> 联系我们</li>
+        <li><a target="_blank"
+          href="http://amos.alicdn.com/msg.aw?v=2&uid=%E6%B7%98%E8%B4%A7%E4%B8%80%E5%8F%B7%E5%BA%97&site=cnalichn&s=10&charset=UTF-8"><img
+            style="height: 14px" src="${config.staticHost}/image/alim.png" /> 旺旺客服 </a></li>
+        <li><a target="_blank" title="打开订购页面，再次购买即可续费"
+          href="http://pc.1688.com/product/operate.htm?spm=a260e.152837.0.0&key=k_spzncf&tracelog=app_map_k_spzncf"><i
+            class="icon-shopping-cart"></i> 我要续费</a></li>
+        <li><a href="javascript:repub.bookmarkPage('http://1688.boke163.cn/repub','商品自动重发');"><i
+            class="icon-download-alt"></i> 添加到收藏栏<span style="color: red"> +</span> </a></li>
+        <li><a title="下载到桌面快捷方式" href="${config.staticHost}/style/商品智能重发.url"><i class="icon-download-alt"></i>
+            桌面快捷方式</a></li>
+      </ul>
+    </div>
+    <div class="span9">#parse("share/${path}/main.htm")</div>
+  </div>
+</div>

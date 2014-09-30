@@ -1,0 +1,18 @@
+##加载
+#set($initJs = "")
+##自定义分类选择期
+#set($initJs = "$initJs $('#selectSelfCats').select2({placeholder : '点击此框，然后选择自定义分类（可多选）',allowClear : true});")
+#set($initJs = "$initJs var initCats = [];")
+#foreach($catId in $selectSelfcatids)
+  #set($initJs = "$initJs initCats.push('${catId}');")
+#end
+#set($initJs = "$initJs $('#selectSelfCats').val(initCats).trigger('change');")
+##时间段选择的个数
+#if($timeAreas)
+  #set($timeAreasSize=${timeAreas.size()})
+#else
+  #set($timeAreasSize=1)
+#end
+#set($initJs = "$initJs repub.timeSelectCount=$timeAreasSize;")
+##tip
+#set($initJs = "$initJs $('button[tips]').tooltip();")

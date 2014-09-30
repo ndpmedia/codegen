@@ -1,0 +1,121 @@
+<div class="container" style="margin: 0 auto; width: 100%; margin-bottom: 50px;">
+  <div class="alert alert-info">
+    <strong>温馨提示</strong>：<strong>第一步</strong>，选择“自定义分类”或“整店的所有商品”；<strong>第二步</strong>，设置时间段，最多可以有3个时间段；<strong>第三步</strong>，保存修改。这样即可完成设置。另外，如果要开启自动重发，记得确保<strong>“自动重发的状态”</strong>为“已开启”状态喔！
+    <br><strong>注意：有不少商家反映，下架的商品不希望被重发，所以软件绝对不会重发下架中商品，请知晓！</strong>
+  </div>
+  <div style="width: 100%;">
+    <h4 style="">自动重发设置</h4>
+    <div id="alertMessageDiv" style="text-align: center;"></div>
+    <div id="switchOpen"
+      style="text-align: right; margin-right: 30px; margin-bottom: 10px; #if (!$repubSetting.switchOpen)display: none #end">
+      <span>自动重发的状态：</span> <span id="switchStatus" style="margin-right: 30px; color: green; font-weight: bold;">已开启</span>
+      <span>开启/关闭：</span>
+      <button onclick="repub.switchOpen(false)" style="margin: 0 auto" type="button" class="btn btn-warning">关闭</button>
+    </div>
+    <div id="switchClose"
+      style="text-align: right; margin-right: 30px; margin-bottom: 10px; #if ($repubSetting.switchOpen)display: none #end">
+      <span>自动重发的状态：</span> <span id="switchStatus" style="margin-right: 30px; color: red; font-weight: bold;">未开启</span>
+      <span>开启/关闭：</span>
+      <button onclick="repub.switchOpen(true)" style="margin: 0 auto" type="button" class="btn btn-success">开启</button>
+    </div>
+    <div style="width: 100%; background-color: #F7F7F9; border: 1px solid #E1E1E8; border-radius: 4px 4px 4px 4px;">
+      <form id="form" method="post" onsubmit="repub.submit0(this);return false;"
+        action="$!{rc.contextPath}/safe/setting/save" class="form-horizontal">
+        <input type="hidden" name="createOpt" value="$!{createOpt}"> <input type="hidden" name="csrfToken"
+          value="$!{csrfToken}">
+        <div class="control-group" style="margin-bottom: 50px; margin-top: 30px">
+          <label class="control-label">选择商品的范围： </label>
+          <div class="controls">
+            <label class="radio" style="margin-bottom: 20px"> <input type="radio" name="selectAll"
+              #if(${repubSetting.selectAll}) checked="" #end value="true"> 整店的所有商品 (不包括下架中的商品)
+            </label> <label class="radio"> <input type="radio" name="selectAll"
+              #if(!${repubSetting.selectAll}) checked="" #end value="false"> 指定自定义分类 (不包括下架中的商品)
+            </label>
+            <div style="margin-left: 28px;">
+              <select multiple="multiple" name="selectSelfCats" id="selectSelfCats" style="width: 350px;"
+                class="populate select2-offscreen" tabindex="-1"> #foreach($selfCat in $selfCats)
+                <option value="${selfCat.id}">${selfCat.name}</option> #end
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">每天重发时间段：</label>
+          <div id="timeSelectParent" class="controls">
+            #if(!$timeAreas)
+            <div style="margin-bottom: 10px">
+              <select name="selectHours" style="width: 65px"> #foreach($option in $hourList)
+                <option value="$option.value">$option.text</option> #end
+              </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+                <option value="$option.value">$option.text</option> #end
+              </select> &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <select name="selectHours" style="width: 65px">
+                #foreach($option in $hourList)
+                <option value="$option.value">$option.text</option> #end
+              </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+                <option value="$option.value">$option.text</option> #end
+              </select>
+              <button id="addTimeSelectButton" style="margin-left: 30px" onclick="repub.addTimeSelect();" type="button"
+                class="btn btn-mini btn-primary" tips="" rel="tooltip" title="最多能有 5 个时间段" data-trigger="hover">
+                <i class="icon-plus icon-white"></i> 添加时间段
+              </button> <span style="font-size:12px;color:green;"> (最多可设置 5 个时间段！)</span>
+            </div>
+            #else #foreach($timeArea in $timeAreas)
+            <div style="margin-bottom: 10px">
+              #set($from = $timeArea.from) #set($to = $timeArea.to) <select name="selectHours" style="width: 65px">
+                #foreach($option in $hourList)
+                <option value="$option.value" #if($from.hour== $option.value) selected="selected" #end>$option.text</option>
+                #end
+              </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+                <option value="$option.value" #if($from.minute== $option.value) selected="selected" #end>$option.text</option>
+                #end
+              </select> &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <select name="selectHours" style="width: 65px">
+                #foreach($option in $hourList)
+                <option value="$option.value" #if($to.hour== $option.value) selected="selected" #end>$option.text</option>
+                #end
+              </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+                <option value="$option.value" #if($to.minute== $option.value) selected="selected" #end>$option.text</option>
+                #end
+              </select> #if($velocityCount==1)
+              <button id="addTimeSelectButton" style="margin-left: 30px" onclick="repub.addTimeSelect();" type="button"
+                class="btn btn-mini btn-primary" tips="" rel="tooltip" title="最多能有 5 个时间段" data-trigger="hover">
+                <i class="icon-plus icon-white"></i> 添加时间段
+              </button> <span style="font-size:12px;color:green;"> (最多可设置 5 个时间段！)</span>
+              #else
+              <button style="margin-left: 30px" onclick="repub.removeTimeSelect(this);" type="button"
+                class="btn btn-danger btn-mini">
+                <i class="icon-remove icon-white"></i> 移除
+              </button>
+              #end
+            </div>
+            #end #end
+
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <button id="submit" style="float: right; margin-right: 40px" type="submit" class="btn btn-success">保存修改</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div style="display: none" id="select_time">
+      <div style="margin-bottom: 10px">
+        <select name="selectHours" style="width: 65px"> #foreach($option in $hourList)
+          <option value="$option.value">$option.text</option> #end
+        </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+          <option value="$option.value">$option.text</option> #end
+        </select> &nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <select name="selectHours" style="width: 65px"> #foreach($option
+          in $hourList)
+          <option value="$option.value">$option.text</option> #end
+        </select> : <select name="selectMinutes" style="width: 65px"> #foreach($option in $minuteList)
+          <option value="$option.value">$option.text</option> #end
+        </select>
+        <button style="margin-left: 30px" onclick="repub.removeTimeSelect(this);" type="button"
+          class="btn btn-danger btn-mini">
+          <i class="icon-remove icon-white"></i> 移除
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+#parse("share/${path}/initJs.htm")

@@ -1,0 +1,26 @@
+#set($layout = "monitorLayout.htm")
+<div style="padding: 30px">
+   <p>时间总数(包含无任务的)：$stat.size()</p>
+   <table class="table table-hover table-striped">
+      <thead>
+         <tr>
+            <th>时间</th>
+            <th>任务个数</th>
+         </tr>
+      </thead>
+      <tbody id="resultTable">
+         #set($totalTask = 0) #set($totalTimePoint = 0) #foreach($entry in $stat.entrySet()) #if( $entry.value >
+         0)
+         #set($totalTask = $totalTask + $entry.value)
+         #set($totalTimePoint = $totalTimePoint + 1)
+         <tr>
+            <td>$entry.key</td>
+            <td><a target="_blank" #if($entry.value>0) style="color:green;" #else style="color:grey;" #end
+                  href="detail?hhmm=$entry.key"> $entry.value 个任务</a></td>
+         </tr>
+         #end #end
+      </tbody>
+   </table>
+   <p>时间总数(只包含有任务的)：$totalTimePoint</p>
+   <p>任务总数：$totalTask</p>
+</div>
